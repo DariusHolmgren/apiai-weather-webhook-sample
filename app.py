@@ -63,7 +63,7 @@ def makeYqlQuery(req):
 def getTime(req):
     result = req.get("result")
     action = result.get("action")
-    if action == "time.query":
+    if "time" in action:
         cTime = strftime("%H:%M")
         parameters = result.get("parameters")
         gTime = parameters.get("geo-time")
