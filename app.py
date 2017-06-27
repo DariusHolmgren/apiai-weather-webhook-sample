@@ -74,9 +74,9 @@ def getTime(req):
     action = result.get("action")
     cTime = strftime("%H:%M")
     parameters = result.get("parameters")
-    #gTime = parameters.get("geo-time")
-    #speech = "Current time = " + cTime + " and gTime = " + gTime
-    speech = "69"    
+    gTime = parameters.get("time")
+    speech = "Current time = " + cTime + " and gTime = " + gTime
+    
     return {
         "speech": speech,
         "displayText": speech,
