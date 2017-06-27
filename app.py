@@ -63,23 +63,20 @@ def makeYqlQuery(req):
 def getTime(req):
     result = req.get("result")
     action = result.get("action")
+    speech = action
     if "time" in action:
         cTime = strftime("%H:%M")
         parameters = result.get("parameters")
         gTime = parameters.get("geo-time")
         speech = "Current time = " + cTime + " and gTime = " + gTime
-        return {
-            "speech": speech,
-            "displayText": speech,
-            # "data": data,
-            # "contextOut": [],
-            "source": "apiai-weather-webhook-sample"
-        }
         
-        # if gTime is not Null and gTime != "":
-        #   return {}
-
-    return {}
+    return {
+        "speech": speech,
+        "displayText": speech,
+        # "data": data,
+        # "contextOut": [],
+        "source": "apiai-weather-webhook-sample"
+    }
 
 def makeWebhookResult(data):
     query = data.get('query')
