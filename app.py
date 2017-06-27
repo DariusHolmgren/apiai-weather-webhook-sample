@@ -72,11 +72,11 @@ def makeYqlQuery(req):
 def getTime(req):
     result = req.get("result")
     action = result.get("action")
-    cTime = strftime("%H:%M")
-    parameters = result.get("parameters")
-    gTime = parameters.get("geo-time")
-    speech = "Current time = " + cTime + " and gTime = " + gTime
-        
+    #cTime = strftime("%H:%M")
+    #parameters = result.get("parameters")
+    #gTime = parameters.get("geo-time")
+    #speech = "Current time = " + cTime + " and gTime = " + gTime
+    speech = "69"    
     return {
         "speech": speech,
         "displayText": speech,
@@ -105,8 +105,6 @@ def makeWebhookResult(data):
     condition = item.get('condition')
     if condition is None:
         return {}
-
-    # print(json.dumps(item, indent=4))
 
     speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
              ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
