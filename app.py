@@ -79,7 +79,7 @@ def getTime(req):
     gTime = parameters.get("time")
     if gTime is not None:
         if cTime in gTime:
-            speech = "Current time is " + cTime + " which is gTime = " + gTime
+            speech = "Correct.  It is currently " + cTime + "."
         else:
             speech = "Current time is " + cTime + " which is not gTime = " + gTime
     else:
