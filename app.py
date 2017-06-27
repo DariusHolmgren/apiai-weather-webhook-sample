@@ -15,6 +15,8 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
+from time import strftime
+
 # Flask app should start in global layout
 app = Flask(__name__)
 
@@ -41,7 +43,7 @@ def processRequest(req):
     baseurl = "https://query.yahooapis.com/v1/public/yql?"
     yql_query = makeYqlQuery(req)
     if yql_query is None:
-        return {}
+        return getTime(req)
     yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
     result = urlopen(yql_url).read()
     data = json.loads(result)
@@ -58,6 +60,26 @@ def makeYqlQuery(req):
 
     return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
 
+def getTime(req):
+    result = req.get("result")
+    action = result.get("action")
+    if action == "time.query":
+        cTime = strftime("%H:%M")
+        parameters = result.get("parameters")
+        gTime = parameters.get("geo-time")
+        speech = "Current time = " + cTime + " and gTime = " + gTime
+        return {
+            "speech": speech,
+            "displayText": speech,
+            # "data": data,
+            # "contextOut": [],
+            "source": "apiai-weather-webhook-sample"
+        }
+        
+        # if gTime is not Null and gTime != "":
+        #   return {}
+
+    return {}
 
 def makeWebhookResult(data):
     query = data.get('query')
