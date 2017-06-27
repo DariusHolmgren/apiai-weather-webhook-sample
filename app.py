@@ -15,7 +15,7 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
-from time import strftime
+import time
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -72,10 +72,18 @@ def makeYqlQuery(req):
 def getTime(req):
     result = req.get("result")
     action = result.get("action")
-    cTime = strftime("%H:%M")
+    os.environ['TZ'] = 'US/Pacific'
+    time.tzset()
+    cTime = time.strftime("%H:%M")
     parameters = result.get("parameters")
-    gTime = parameters.get("time")
-    speech = "Current time = " + cTime + " and gTime = " + gTime
+    if gTime is not None:
+        gTime = parameters.get("time")
+        if cTime in gTime:
+            speech = "Current time is " + cTime + " which is gTime = " + gTime
+        else:
+            speech = "Current time is " + cTime + " which is not gTime = " + gTime
+    else:
+        speech = "Current time is " + cTime
     
     return {
         "speech": speech,
