@@ -40,16 +40,25 @@ def webhook():
 def processRequest(req):
     if "hook" not in req.get("result").get("action"):
         return {}
-    baseurl = "https://query.yahooapis.com/v1/public/yql?"
-    yql_query = makeYqlQuery(req)
-    if yql_query is None:
-        return getTime(req)
-    yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
-    result = urlopen(yql_url).read()
-    data = json.loads(result)
-    res = makeWebhookResult(data)
-    return res
+    
+    if "Weather" in req.get("result").get("action"):
+        baseurl = "https://query.yahooapis.com/v1/public/yql?"
+        yql_query = makeYqlQuery(req)
+        yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
+        result = urlopen(yql_url).read()
+        data = json.loads(result)
+        res = makeWebhookResult(data)
+        return res
 
+    if "Time" in req.get("result").get("action"):
+        return getTime(req)
+    
+    speech = "Doodad API got confused"
+    return {
+        "speech": speech,
+        "displayText": speech,
+        "source": "apiai-weather-webhook-sample"
+    }
 
 def makeYqlQuery(req):
     result = req.get("result")
