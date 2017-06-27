@@ -76,8 +76,8 @@ def getTime(req):
     time.tzset()
     cTime = time.strftime("%H:%M")
     parameters = result.get("parameters")
+    gTime = parameters.get("time")
     if gTime is not None:
-        gTime = parameters.get("time")
         if cTime in gTime:
             speech = "Current time is " + cTime + " which is gTime = " + gTime
         else:
