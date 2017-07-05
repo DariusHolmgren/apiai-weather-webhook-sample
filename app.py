@@ -77,7 +77,7 @@ def getTime(req):
     cTime = time.strftime("%H:%M")
     parameters = result.get("parameters")
     gTime = parameters.get("time")
-    if gTime is not None:
+    if gTime is not None and gTime is not "":
         if cTime in gTime:
             speech = "Correct.  It is currently " + cTime + "."
         else:
