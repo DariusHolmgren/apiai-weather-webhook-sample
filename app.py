@@ -67,16 +67,13 @@ def makeYqlQuery(req):
 def getKUSC(req):
     url = urlopen("http://schedule.kusc.org/now/KUSC.json")
     data = json.loads(url.read().decode())
-    
     # Get time until end of song
-    endTimeString = data.get("end").get("dateTime")
-    endTime = dateutil.parser.parse(endTimeString)
+    timestamp = data.get("end").get("dateTime")
     endTimeString = time.strptime(timestamp[:19], "%Y-%m-%dT%H:%M:%S")
-    endTime.datetime.fromtimestamp(time.mktime(endTimeString))
+    endTime = datetime.datetime.fromtimestamp(time.mktime(endTimeString))
     nowTime = datetime.datetime.now()
     deltaTime = (endTime - nowTime).total_seconds()
     deltaTimeString = "" + str(int(deltaTime / 60)) + " minutes and " + str(int(deltaTime % 60)) + " seconds."
-    
     # Construct sentence to return
     speech = ""
     speech += data.get("extraInfo").get("title")
@@ -86,7 +83,6 @@ def getKUSC(req):
     speech += data.get("extraInfo").get("Orchestra")
     speech += ".  It will end in "
     speech += deltaTimeString
-
     return {
         "speech": speech,
         "displayText": speech,
