@@ -36,7 +36,7 @@ def webhook():
 def processRequest(req):
     intent = req.get("result").get("metadata").get("intentName")
     
-    if "hook" in inent:
+    if "hook" in intent:
    
         if "KUSC" in intent:
             return getKUSC(req)
