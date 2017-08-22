@@ -66,12 +66,11 @@ def makeYqlQuery(req):
 def getKUSC(req):
     speech = ""
     with urllib.request.urlopen("http://schedule.kusc.org/now/KUSC.json") as url:
-        data = json.loads(url.read().decode())
-        speech = data
+        speech = json.loads(url.read().decode())
 
     return {
         "speech": speech,
-        "displayText": data,
+        "displayText": speech,
         "source": "apiai-weather-webhook-sample"
     }
 
