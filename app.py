@@ -35,29 +35,25 @@ def webhook():
 
 
 def processRequest(req):
+    ret =  {
+        "speech": "Doodad API got confused",
+        "displayText": intent,
+        "source": "processRequest"
+    }
     intent = req.get("result").get("metadata").get("intentName")
     
     if "hook" in intent:
    
         if "KUSC" in intent:
-            return {
-                "speech": "test",
-                "displayText": intent,
-                "source": "apiai-weather-webhook-sample"
-            }
+            ret =  getKUSC(req)
 
         if "Time" in intent:
-            return getTime(req)
+            ret = getTime(req)
         
         if "Weather" in intent:
-            return getWeather(req)
+            ret = getWeather(req)
     
-    speech = "Doodad API got confused"
-    return {
-        "speech": speech,
-        "displayText": speech,
-        "source": "apiai-weather-webhook-sample"
-    }
+    return ret
 
 def makeYqlQuery(req):
     result = req.get("result")
@@ -93,7 +89,7 @@ def getKUSC(req):
     return {
         "speech": speech,
         "displayText": speech,
-        "source": "apiai-weather-webhook-sample"
+        "source": "getKUSC"
     }
 
 def getTime(req):
@@ -115,7 +111,7 @@ def getTime(req):
     return {
         "speech": speech,
         "displayText": speech,
-        "source": "apiai-weather-webhook-sample"
+        "source": "getTime"
     }
 
 def getWeather(req):
@@ -161,7 +157,7 @@ def makeWebhookResult(data):
         "displayText": speech,
         # "data": data,
         # "contextOut": [],
-        "source": "apiai-weather-webhook-sample"
+        "source": "getWeather-makeWebhookResult"
     }
 
 
