@@ -38,20 +38,18 @@ def webhook():
 
 
 def processRequest(req):
-    if "hook" not in req.get("result").get("action"):
-        return {}
+    intent = req.get("result").get("metadata").get("intentName")
     
-    if "Weather" in req.get("result").get("action"):
-        baseurl = "https://query.yahooapis.com/v1/public/yql?"
-        yql_query = makeYqlQuery(req)
-        yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
-        result = urlopen(yql_url).read()
-        data = json.loads(result)
-        res = makeWebhookResult(data)
-        return res
+    if "hook" in inent:
+   
+        if "KUSC" in intent:
+            return getKUSC(req)
 
-    if "Time" in req.get("result").get("action"):
-        return getTime(req)
+        if "Time" in intent:
+            return getTime(req)
+        
+        if "Weather" in intent:
+            return getWeather(req)
     
     speech = "Doodad API got confused"
     return {
@@ -69,6 +67,18 @@ def makeYqlQuery(req):
 
     return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
 
+def getKUSC(req):
+    speech = ""
+    with urllib.request.urlopen("http://schedule.kusc.org/now/KUSC.json") as url:
+        data = json.loads(url.read().decode())
+        speech = data
+
+    return {
+        "speech": speech,
+        "displayText": data,
+        "source": "apiai-weather-webhook-sample"
+    }
+
 def getTime(req):
     result = req.get("result")
     action = result.get("action")
@@ -81,7 +91,7 @@ def getTime(req):
         if cTime in gTime:
             speech = "Correct.  It is currently " + cTime + "."
         else:
-            speech = "Current time is " + cTime + " which is not gTime = " + gTime
+            speech = "Current time is " + cTime + " which is not " + gTime
     else:
         speech = "Current time is " + cTime
     
@@ -90,6 +100,15 @@ def getTime(req):
         "displayText": speech,
         "source": "apiai-weather-webhook-sample"
     }
+
+def getWeather(req):
+    baseurl = "https://query.yahooapis.com/v1/public/yql?"
+    yql_query = makeYqlQuery(req)
+    yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
+    result = urlopen(yql_url).read()
+    data = json.loads(result)
+    res = makeWebhookResult(data)
+    return res
 
 def makeWebhookResult(data):
     query = data.get('query')
