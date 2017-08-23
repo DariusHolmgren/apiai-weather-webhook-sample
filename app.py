@@ -77,8 +77,10 @@ def getKUSC(req):
     endTimeString = time.strptime(timestamp[:19], "%Y-%m-%dT%H:%M:%S")
     endTime = datetime.datetime.fromtimestamp(time.mktime(endTimeString)).replace(tzinfo=datetime.timezone.utc)
     nowTime = datetime.datetime.now().replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
-    deltaTime = (endTime - nowTime).total_seconds()
-    deltaTimeString = "" + str(int(deltaTime / 60)) + " minutes and " + str(int(deltaTime % 60)) + " seconds."
+    deltaTime = (endTime - nowTime).total_seconds() + 60
+    if ( (endTime - nowTime).total_seconds() < 0 ):
+        deltaTimeString = " will end shortly."
+    deltaTimeString = " will end in " + str(int(deltaTime / 60)) + " minutes and " + str(int(deltaTime % 60)) + " seconds."
     
     # Construct sentence to return
     speech = ""
@@ -87,12 +89,13 @@ def getKUSC(req):
     speech += data.get("extraInfo").get("Composer")
     speech += " and played by " 
     speech += data.get("extraInfo").get("Orchestra")
-    speech += ".  It will end in "
+    displayText = speech
+    displayText += "."
     speech += deltaTimeString
     
     return {
         "speech": speech,
-        "displayText": speech,
+        "displayText": displayText,
         "source": "getKUSC"
     }
 
