@@ -35,12 +35,12 @@ def webhook():
 
 
 def processRequest(req):
+    intent = req.get("result").get("metadata").get("intentName")
     ret =  {
         "speech": "Doodad API got confused",
         "displayText": intent,
         "source": "processRequest"
     }
-    intent = req.get("result").get("metadata").get("intentName")
     
     if "hook" in intent:
    
