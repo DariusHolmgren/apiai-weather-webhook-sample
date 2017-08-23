@@ -42,17 +42,21 @@ def processRequest(req):
         "source": "processRequest"
     }
     
-    if "hook" in intent:
-   
-        if "KUSC" in intent:
-            ret =  getKUSC(req)
+    try:
+        if "hook" in intent:
 
-        if "Time" in intent:
-            ret = getTime(req)
+            if "KUSC" in intent:
+                ret =  getKUSC(req)
+
+            elif "Time" in intent:
+                ret = getTime(req)
+
+            elif "Weather" in intent:
+                ret = getWeather(req)
+                
+    except Exception as err:
+        ret["speech"] = "API got confused by " + str(err) 
         
-        if "Weather" in intent:
-            ret = getWeather(req)
-    
     return ret
 
 def makeYqlQuery(req):
