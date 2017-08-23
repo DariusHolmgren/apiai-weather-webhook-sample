@@ -75,8 +75,8 @@ def getKUSC(req):
     # Get time until end of song
     timestamp = data.get("end").get("dateTime")
     endTimeString = time.strptime(timestamp[:19], "%Y-%m-%dT%H:%M:%S")
-    endTime = datetime.datetime.fromtimestamp(time.mktime(endTimeString))
-    nowTime = datetime.datetime.now()
+    endTime = datetime.datetime.fromtimestamp(time.mktime(endTimeString)).replace(tzinfo=datetime.timezone.utc)
+    nowTime = datetime.datetime.now().replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
     deltaTime = (endTime - nowTime).total_seconds()
     deltaTimeString = "" + str(int(deltaTime / 60)) + " minutes and " + str(int(deltaTime % 60)) + " seconds."
     
