@@ -4,6 +4,8 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
+from random import randint
+
 from urllib.parse import urlparse, urlencode
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError
@@ -54,12 +56,17 @@ def processRequest(req):
             elif "Weather" in intent:
                 ret = getWeather(req)
                 
+            elif "Rick" in intent:
+                ret = getSchwifty(req)
+                
     except Exception as err:
         ret["speech"] = "API got confused by " + str(err) 
         
     return ret
 
+
 def makeYqlQuery(req):
+    
     result = req.get("result")
     parameters = result.get("parameters")
     city = parameters.get("geo-city")
@@ -68,7 +75,9 @@ def makeYqlQuery(req):
 
     return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
 
+
 def getKUSC(req):
+    
     url = urlopen("http://schedule.kusc.org/now/KUSC.json")
     data = json.loads(url.read().decode())
     
@@ -99,7 +108,24 @@ def getKUSC(req):
         "source": "getKUSC"
     }
 
+
+def getSchwifty(req):
+    
+    target_url = "https://raw.githubusercontent.com/aethersg/rick-morty-python-api/master/quotes.json"
+    txt = urlopen(target_url).read()
+    lines = txt.splitlines()
+    random_line = lines[(randint( 1, len(lines) - 2 ))]
+    # turn bytes into string without leading spaces, strip out begining quotes and ending quotes, and remove comma
+    quote_string = random_line.decode("utf-8").strip()[1:-2]
+    
+    return {
+        "speech": quote_string,
+        "displayText": quote_string,
+        "source": "getSchwifty"
+    }
+    
 def getTime(req):
+    
     result = req.get("result")
     action = result.get("action")
     os.environ['TZ'] = 'US/Pacific'
@@ -107,6 +133,7 @@ def getTime(req):
     cTime = time.strftime("%H:%M")
     parameters = result.get("parameters")
     gTime = parameters.get("time")
+    
     if gTime is not None and gTime is not "":
         if cTime in gTime:
             speech = "Correct.  It is currently " + cTime + "."
@@ -122,13 +149,16 @@ def getTime(req):
     }
 
 def getWeather(req):
+    
     baseurl = "https://query.yahooapis.com/v1/public/yql?"
     yql_query = makeYqlQuery(req)
     yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
     result = urlopen(yql_url).read()
     data = json.loads(result)
     res = makeWebhookResult(data)
+    
     return res
+
 
 def makeWebhookResult(data):
     query = data.get('query')
