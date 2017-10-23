@@ -86,10 +86,11 @@ def getKUSC(req):
     endTimeString = time.strptime(timestamp[:19], "%Y-%m-%dT%H:%M:%S")
     endTime = datetime.datetime.fromtimestamp(time.mktime(endTimeString)).replace(tzinfo=datetime.timezone.utc)
     nowTime = datetime.datetime.now().replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
-    deltaTime = (endTime - nowTime).total_seconds() + 60
+    deltaTime = (endTime - nowTime).total_seconds()
     if ( (endTime - nowTime).total_seconds() < 0 ):
-        deltaTimeString = " will end shortly."
-    deltaTimeString = " will end in " + str(int(deltaTime / 60)) + " minutes and " + str(int(deltaTime % 60)) + " seconds."
+        deltaTimeString = " has just ended."
+    else:
+        deltaTimeString = " will end in " + str(int(deltaTime / 60)) + " minutes and " + str(int(deltaTime % 60)) + " seconds."
     
     # Construct sentence to return
     speech = ""
